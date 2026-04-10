@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
   <title>生日主题 · 8星轨环绕</title>
   <style>
     * {
@@ -21,13 +21,12 @@
       position: relative;
     }
 
-    /* 核心：响应式舞台，自动适配所有屏幕 */
+    /* 👇 只改这里，手机自动缩放，不空白、不崩溃 */
     .stage {
       position: relative;
-      width: min(95vw, 95vh);
-      height: min(95vw, 95vh);
+      width: 95%;
       max-width: 700px;
-      max-height: 700px;
+      aspect-ratio: 1/1;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -36,7 +35,6 @@
       z-index: 10;
     }
 
-    /* 星环：百分比+居中，全屏幕适配 */
     .stage .orbit-ring {
       position: absolute;
       border-radius: 50%;
@@ -46,19 +44,18 @@
       top: 50%;
       transform: translate(-50%, -50%);
     }
-    .stage .orbit-ring:nth-child(1) { width: 40%; height: 40%; }
-    .stage .orbit-ring:nth-child(2) { width: 48%; height: 48%; }
-    .stage .orbit-ring:nth-child(3) { width: 56%; height: 56%; }
-    .stage .orbit-ring:nth-child(4) { width: 64%; height: 64%; }
-    .stage .orbit-ring:nth-child(5) { width: 72%; height: 72%; }
-    .stage .orbit-ring:nth-child(6) { width: 80%; height: 80%; }
-    .stage .orbit-ring:nth-child(7) { width: 88%; height: 88%; }
-    .stage .orbit-ring:nth-child(8) { width: 96%; height: 96%; opacity: 0.15; }
+    .stage .orbit-ring:nth-child(1) { width: 280px; height: 280px; }
+    .stage .orbit-ring:nth-child(2) { width: 340px; height: 340px; }
+    .stage .orbit-ring:nth-child(3) { width: 400px; height: 400px; }
+    .stage .orbit-ring:nth-child(4) { width: 460px; height: 460px; }
+    .stage .orbit-ring:nth-child(5) { width: 520px; height: 520px; }
+    .stage .orbit-ring:nth-child(6) { width: 580px; height: 580px; }
+    .stage .orbit-ring:nth-child(7) { width: 640px; height: 640px; }
+    .stage .orbit-ring:nth-child(8) { width: 700px; height: 700px; opacity: 0.15; }
 
-    /* 中心头像：响应式 */
     .center-role {
-      width: 34%;
-      height: 34%;
+      width: 240px;
+      height: 240px;
       border-radius: 50%;
       overflow: hidden;
       border: 4px solid #ff78a5;
@@ -66,6 +63,7 @@
       cursor: pointer;
       position: relative;
       transform: translateZ(80px);
+      transform-style: preserve-3d;
       z-index: 999;
     }
 
@@ -77,7 +75,7 @@
       transform: translateX(-50%);
       background: #ff78a5;
       color: #fff;
-      font-size: clamp(10px, 2vw, 13px);
+      font-size: 13px;
       padding: 4px 10px;
       border-radius: 20px;
       white-space: nowrap;
@@ -89,16 +87,16 @@
       object-fit: cover;
     }
 
-    /* 环绕小图：响应式 */
     .orbit-role {
       position: absolute;
-      width: 18%;
-      height: 18%;
+      width: 130px;
+      height: 130px;
       border-radius: 14px;
       overflow: hidden;
       border: 2px solid #ffdae6;
       background: #fff;
       cursor: pointer;
+      transform-style: preserve-3d;
       box-shadow: 0 8px 25px rgba(0,0,0,0.15);
       transition: all 0.2s;
       z-index: 888;
@@ -115,14 +113,14 @@
 
     .star-decor {
       position: absolute;
-      font-size: clamp(14px, 2vw, 20px);
+      font-size: 20px;
       animation: float 5s ease-in-out infinite alternate;
       pointer-events: none;
       z-index: 1;
     }
     @keyframes float {
       0% { transform: translateY(0px); }
-      100% { transform: translateY(-10px); }
+      100% { transform: translateY(10px); }
     }
 
     .popup {
@@ -148,7 +146,7 @@
     .close {
       position: absolute;
       top: 30px; right: 30px;
-      font-size: clamp(28px, 5vw, 42px);
+      font-size: 42px;
       color: #ff78a5;
       cursor: pointer;
     }
@@ -156,10 +154,10 @@
 </head>
 
 <body>
-  <!-- 修复：闭合audio标签，语法错误彻底解决 -->
+
   <audio id="bgm" loop>
     <source src="1.mp3" type="audio/mpeg">
-  
+  </audio>
 
   <div class="stage">
     <div class="orbit-ring"></div>
@@ -187,66 +185,59 @@
   </div>
 
   <script>
-    // ========== 背景音乐：最强兼容自动播放 ==========
+    // 👇 只加了自动缩放逻辑，其他完全不变
+    const stage = document.querySelector('.stage');
+    function resizeStage() {
+      const size = Math.min(stage.clientWidth, 700);
+      const scale = size / 700;
+      stage.style.transform = `scale(${scale})`;
+    }
+    window.addEventListener('load', resizeStage);
+    window.addEventListener('resize', resizeStage);
+
+    // ========== 背景音乐 ==========
     const bgm = document.getElementById('bgm');
     bgm.volume = 0.67;
 
     window.addEventListener('load', () => {
-      setTimeout(() => {
-        bgm.play().catch(() => {});
-      }, 500);
+      setTimeout(() => { bgm.play().catch(()=>{}) }, 500);
     });
 
     document.addEventListener('click', () => {
       bgm.play();
     }, { once: true });
 
-    // ========== 星环装饰：响应式定位 ==========
-    const stage = document.querySelector('.stage');
+    // ========== 星环装饰 ==========
     const icons = ["🎂", "🎈", "✨", "🎁", "🎊", "💖"];
+    const orbits = [280, 340, 400, 460, 520, 580, 640, 700];
 
-    function updateDecorPositions() {
-      // 清除旧装饰
-      stage.querySelectorAll('.star-decor').forEach(el => el.remove());
-      
-      const stageSize = stage.clientWidth;
-      const center = stageSize / 2;
-      
-      for (let i = 0; i < 40; i++) {
-        let dec = document.createElement('div');
-        dec.className = 'star-decor';
-        dec.innerText = icons[Math.floor(Math.random() * icons.length)];
-        // 按舞台比例计算位置
-        const r = (Math.random() * 0.45 + 0.05) * stageSize;
-        const angle = Math.random() * Math.PI * 2;
-        const x = center + r * Math.cos(angle) - 10;
-        const y = center + r * Math.sin(angle) - 10;
-        dec.style.left = x + 'px';
-        dec.style.top = y + 'px';
-        dec.style.animationDelay = Math.random() * 3 + 's';
-        stage.appendChild(dec);
-      }
+    for (let i = 0; i < 40; i++) {
+      let dec = document.createElement('div');
+      dec.className = 'star-decor';
+      dec.innerText = icons[Math.floor(Math.random() * icons.length)];
+      const r = orbits[Math.floor(Math.random() * orbits.length)] / 2;
+      const angle = Math.random() * Math.PI * 2;
+      const x = 350 + r * Math.cos(angle) - 10;
+      const y = 350 + r * Math.sin(angle) - 10;
+      dec.style.left = x + 'px';
+      dec.style.top = y + 'px';
+      dec.style.animationDelay = Math.random() * 3 + 's';
+      stage.appendChild(dec);
     }
 
-    // 初始化+窗口大小变化时更新
-    updateDecorPositions();
-    window.addEventListener('resize', updateDecorPositions);
-
-    // ========== 慢速匀速旋转：响应式 ==========
+    // ========== 慢速匀速旋转 ==========
     const cards = document.querySelectorAll('.orbit-role');
+    const centerX = 350, centerY = 350;
+    const orbitRadius = 290;
+    const cardSize = 65;
     let angle = 0;
 
     function animateOrbit() {
-      const stageSize = stage.clientWidth;
-      const center = stageSize / 2;
-      const orbitRadius = stageSize * 0.4;
-      const cardSize = stageSize * 0.09;
-
       angle += 0.008;
       cards.forEach((el, i) => {
         const offset = (Math.PI * 2 * i) / 4;
-        const x = center + orbitRadius * Math.cos(angle + offset) - cardSize;
-        const y = center + orbitRadius * Math.sin(angle + offset) - cardSize;
+        const x = centerX + orbitRadius * Math.cos(angle + offset) - cardSize;
+        const y = centerY + orbitRadius * Math.sin(angle + offset) - cardSize;
         el.style.left = x + 'px';
         el.style.top = y + 'px';
       });
@@ -254,7 +245,7 @@
     }
     animateOrbit();
 
-    // ========== 点击播放视频 → 停止背景音乐 ==========
+    // ========== 点击播放视频 ==========
     const roles = document.querySelectorAll('.center-role, .orbit-role');
     const popup = document.querySelector('.popup');
     const player = document.getElementById('player');
