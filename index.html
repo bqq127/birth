@@ -21,18 +21,20 @@
       position: relative;
     }
 
-    /* 👇 只改这里，手机自动缩放，不空白、不崩溃 */
+    /* ------------ 只修改这一个样式 ------------ */
     .stage {
       position: relative;
-      width: 95%;
-      max-width: 700px;
-      aspect-ratio: 1/1;
+      width: 700px;
+      height: 700px;
       display: flex;
       justify-content: center;
       align-items: center;
       perspective: 1200px;
       transform-style: preserve-3d;
       z-index: 10;
+
+      /* 👇 只加这一行，手机安全缩放，不空白、不位移 */
+      transform-origin: center center;
     }
 
     .stage .orbit-ring {
@@ -185,15 +187,19 @@
   </div>
 
   <script>
-    // 👇 只加了自动缩放逻辑，其他完全不变
+    // ========== 手机自适应：最安全写法，绝不空白 ==========
     const stage = document.querySelector('.stage');
-    function resizeStage() {
-      const size = Math.min(stage.clientWidth, 700);
-      const scale = size / 700;
-      stage.style.transform = `scale(${scale})`;
+    function fitMobile() {
+      const windowWidth = document.documentElement.clientWidth;
+      if (windowWidth < 700) {
+        const scale = windowWidth / 700;
+        stage.style.transform = `scale(${scale})`;
+      } else {
+        stage.style.transform = 'scale(1)';
+      }
     }
-    window.addEventListener('load', resizeStage);
-    window.addEventListener('resize', resizeStage);
+    window.addEventListener('load', fitMobile);
+    window.addEventListener('resize', fitMobile);
 
     // ========== 背景音乐 ==========
     const bgm = document.getElementById('bgm');
